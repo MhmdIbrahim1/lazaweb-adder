@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+   // fetchData();
   }
 
   Future<String?> uploadFile() async {
@@ -99,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return null;
     }
   }
-
 
   void _showColorPickerDialog() {
     Color currentColor = Colors.black;
@@ -189,28 +188,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void resetFields() {
-    setState(() {
-      _selectedImages = [];
-      _selectedColors = [];
-    });
-
-    _nameController.clear();
-    _brandController.clear();
-    _descriptionController.clear();
-    _priceController.clear();
-    _offerPercentageController.clear();
-    _sizesController.clear();
-  }
-
-  bool validateInformation() {
-    if (_priceController.text.trim().isEmpty) return false;
-    if (_nameController.text.trim().isEmpty) return false;
-    if (_brandController.text.trim().isEmpty) return false;
-    if (_selectedImages!.isEmpty) return false;
-
-    return true;
-  }
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
@@ -241,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<String> downloadUrls = [];
 
     for (Uint8List imageBytes in _selectedImages!) {
-      String imageName = '${const Uuid().v4()}.jpg'; // You can use any appropriate image name format
+      String imageName = const Uuid().v4();
       Reference storageRef = FirebaseStorage.instance.ref().child('products/images/$imageName');
       UploadTask uploadTask = storageRef.putData(imageBytes);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
@@ -252,19 +229,41 @@ class _MyHomePageState extends State<MyHomePage> {
     return downloadUrls;
   }
 
+  void resetFields() {
+    setState(() {
+      _selectedImages = [];
+      _selectedColors = [];
+    });
 
-
-
-  CollectionReference dataList = FirebaseFirestore.instance.collection('products');
-  Future<void> fetchData() async {
-  //  QuerySnapshot querySnapshot = await dataList.get();
-
-    //List<DocumentSnapshot> allData = querySnapshot.docs;
-
-    // for (DocumentSnapshot doc in allData) {
-    //   // print(doc.data());
-    // }
+    _nameController.clear();
+    _brandController.clear();
+    _descriptionController.clear();
+    _priceController.clear();
+    _offerPercentageController.clear();
+    _sizesController.clear();
   }
+
+  bool validateInformation() {
+    if (_priceController.text.trim().isEmpty) return false;
+    if (_nameController.text.trim().isEmpty) return false;
+    if (_brandController.text.trim().isEmpty) return false;
+    if (_selectedImages!.isEmpty) return false;
+
+    return true;
+  }
+
+
+
+  // CollectionReference dataList = FirebaseFirestore.instance.collection('products');
+  // Future<void> fetchData() async {
+  // //  QuerySnapshot querySnapshot = await dataList.get();
+  //
+  //   //List<DocumentSnapshot> allData = querySnapshot.docs;
+  //
+  //   // for (DocumentSnapshot doc in allData) {
+  //   //   // print(doc.data());
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {

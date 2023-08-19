@@ -53,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Color> _selectedColors = [];
   List<Uint8List>? _selectedImages; // Update this line
+  bool _uploadInProgress = false;
 
 
   final TextEditingController _nameController = TextEditingController();
@@ -156,6 +157,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> uploadProduct() async {
+    setState(() {
+      _uploadInProgress = true;
+    });
     if (validateInformation()) {
       List<String> images = await uploadImages();
       Product product = Product(
@@ -186,6 +190,9 @@ class _MyHomePageState extends State<MyHomePage> {
         const SnackBar(content: Text('Check the required fields')),
       );
     }
+    setState(() {
+      _uploadInProgress = false;
+    });
   }
 
   Future<void> _pickFiles() async {
@@ -270,6 +277,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Colors.black, // Change this to your desired color
+        foregroundColor: Colors.white, // Change this to your desired color
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -320,6 +329,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                     onPressed: _showColorPickerDialog,
                     child: const Text('Colors'),
+                    // give color to the button
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                    ),
                   ),
                   const SizedBox(width: 20),
                   const Text('Selected Colors'),
@@ -341,8 +354,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                     onPressed: _pickFiles,
                     child: const Text('Images'),
+                    // give color to the button
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                    ),
                   ),
                   const SizedBox(width: 20),
+
                   Text('Selected Images: ${_selectedImages?.length}'),
                 ],
               ),
@@ -366,11 +384,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: !_uploadInProgress
+          ? FloatingActionButton(
         onPressed: uploadProduct,
         tooltip: 'Upload Product',
-        child: const Icon(Icons.add),
-      ),
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add, color: Colors.white),
+      )
+          : const CircularProgressIndicator(), // Show progress bar when upload is in progress
     );
   }
 }

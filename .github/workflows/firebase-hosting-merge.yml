@@ -51,8 +51,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'dev'
-      - name: 'Run flutter pub get'
-        run: flutter pub get
+      # - name: 'Run flutter pub get'
+        # run: flutter pub get
       #    - name: 'Run Test(s)'
       #      run: flutter test
       - name: Enable flutter web

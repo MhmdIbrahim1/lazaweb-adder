@@ -27,7 +27,10 @@
 
 name: Analyze, Build and Deploy
 
-on: push
+'on':
+  push:
+    branches:
+      - master
 
 jobs:
   semantic-pull-request:

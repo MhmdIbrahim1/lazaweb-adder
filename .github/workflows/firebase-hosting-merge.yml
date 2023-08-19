@@ -19,6 +19,10 @@ jobs:
         run: flutter pub get
       - name: 'build web app'
         run: flutter web build
+      - name: Install Dependencies
+        run: |
+        sudo npm i
+        sudo npm i -g firebase-tools
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

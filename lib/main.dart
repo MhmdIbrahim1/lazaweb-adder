@@ -10,7 +10,6 @@ import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:mime/mime.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -55,22 +54,23 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Uint8List>? _selectedImages; // Update this line
   bool _uploadInProgress = false;
 
-
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _offerPercentageController = TextEditingController();
+  final TextEditingController _offerPercentageController =
+      TextEditingController();
   final TextEditingController _sizesController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-   // fetchData();
+    // fetchData();
   }
 
   Future<String?> uploadFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(withReadStream: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(withReadStream: true);
 
     if (result != null) {
       PlatformFile file = result.files.first;
@@ -84,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref = storage.ref().child('english/photos/${file.name.split('.').first}');
+      Reference ref =
+          storage.ref().child('english/photos/${file.name.split('.').first}');
 
       final mimeType = lookupMimeType(file.name);
 
@@ -174,12 +175,19 @@ class _MyHomePageState extends State<MyHomePage> {
         description: _descriptionController.text.trim().isEmpty
             ? null
             : _descriptionController.text.trim(),
-        colors: _selectedColors.isEmpty ? null : _selectedColors.map((color) => color.value).toList(),
-        sizes: _sizesController.text.trim().isEmpty ? null : _sizesController.text.trim().split(','),
+        colors: _selectedColors.isEmpty
+            ? null
+            : _selectedColors.map((color) => color.value).toList(),
+        sizes: _sizesController.text.trim().isEmpty
+            ? null
+            : _sizesController.text.trim().split(','),
         images: images, // Use the image URLs here
       );
 
-      await FirebaseFirestore.instance.collection('products').doc(product.id).set(product.toMap());
+      await FirebaseFirestore.instance
+          .collection('products')
+          .doc(product.id)
+          .set(product.toMap());
       resetFields();
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -196,7 +204,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       List<PlatformFile> files = result.files;
 
@@ -226,7 +235,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     for (Uint8List imageBytes in _selectedImages!) {
       String imageName = const Uuid().v4();
-      Reference storageRef = FirebaseStorage.instance.ref().child('products/images/$imageName');
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child('products/images/$imageName');
       UploadTask uploadTask = storageRef.putData(imageBytes);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -258,8 +268,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return true;
   }
-
-
 
   // CollectionReference dataList = FirebaseFirestore.instance.collection('products');
   // Future<void> fetchData() async {
@@ -301,16 +309,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(hintText: 'Product description (Optional)'),
+                decoration: const InputDecoration(
+                    hintText: 'Product description (Optional)'),
               ),
               TextField(
                 controller: _priceController,
-                decoration: const InputDecoration(hintText: 'Price', suffixText: '\$'),
+                decoration:
+                    const InputDecoration(hintText: 'Price', suffixText: '\$'),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: _offerPercentageController,
-                decoration: const InputDecoration(hintText: 'Offer Percentage (Optional)'),
+                decoration: const InputDecoration(
+                    hintText: 'Offer Percentage (Optional)'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 20),
@@ -321,7 +332,8 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 10),
               TextField(
                 controller: _sizesController,
-                decoration: const InputDecoration(hintText: 'Sizes (Optional) | use , between each new size'),
+                decoration: const InputDecoration(
+                    hintText: 'Sizes (Optional) | use , between each new size'),
               ),
               const SizedBox(height: 20),
               Row(
@@ -331,7 +343,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text('Colors'),
                     // give color to the button
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -340,11 +353,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   Wrap(
                     spacing: 5,
                     runSpacing: 5,
-                    children: _selectedColors.map((color) => Container(
-                      width: 40,
-                      height: 40,
-                      color: color,
-                    )).toList(),
+                    children: _selectedColors
+                        .map((color) => Container(
+                              width: 40,
+                              height: 40,
+                              color: color,
+                            ))
+                        .toList(),
                   ),
                 ],
               ),
@@ -356,29 +371,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text('Images'),
                     // give color to the button
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                     ),
                   ),
                   const SizedBox(width: 20),
-
                   Text('Selected Images: ${_selectedImages?.length}'),
                 ],
               ),
               Wrap(
                 spacing: 5,
                 runSpacing: 5,
-                children: _selectedImages?.map((imageBytes) => Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: MemoryImage(imageBytes),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )).toList() ?? [],
+                children: _selectedImages
+                        ?.map((imageBytes) => Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: MemoryImage(imageBytes),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ))
+                        .toList() ??
+                    [],
               ),
-
               const SizedBox(height: 20),
             ],
           ),
@@ -386,11 +403,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: !_uploadInProgress
           ? FloatingActionButton(
-        onPressed: uploadProduct,
-        tooltip: 'Upload Product',
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white),
-      )
+              onPressed: uploadProduct,
+              tooltip: 'Upload Product',
+              backgroundColor: Colors.black,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
           : const CircularProgressIndicator(), // Show progress bar when upload is in progress
     );
   }
